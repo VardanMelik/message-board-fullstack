@@ -19,6 +19,8 @@ app.get('/', (req, res) => {
     });
 });
 
+//app.post('/')
+
 const port = process.env.port || 1234;
 app.listen(port, (req, res) => {
     console.log('Server is running on port: ' + port);
