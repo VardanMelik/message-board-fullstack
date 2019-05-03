@@ -1,37 +1,44 @@
+const Joi = require('@hapi/joi');
 const db = require('./connection');
-const joi = require('joi');
 
-const schema = joi.object().keys({
-    username: joi.string().alphanum().required(),
-    subject: joi.string().required(),
-    message: joi.string().max(500).required(),
-    imageURL: joi.string().uri({
+// * username - default to anonymous
+// * subject
+// * message
+// * imageURL
+// * created
+
+const schema = Joi.object().keys({
+    username: Joi.string(),
+    //imageURL: Joi.string()
+    /*username: Joi.string().alphanum().min(3).max(30).required(),
+    subject: Joi.string(),
+    message: Joi.string().max(500),
+    imageURL: Joi.string().uri({
         scheme: [
-            'git',
-            /git\+https?/
+            /https?/
         ]
-    })
+    })*/
 });
-
 
 const messages = db.get('messages');
 
-function getAllMessages() {
+function getAll() {
     return messages.find();
 }
 
-function insertMessage(message) {
-    let result = joi.validate(message, schema);
+function create(message) {
+    if (!message.username) message.username = 'Anonymous';
+
+    const result = Joi.validate(message, schema);
     if (result.error == null) {
         message.created = new Date();
         return messages.insert(message);
     } else {
         return Promise.reject(result.error);
     }
-
-};
+}
 
 module.exports = {
-    insertMessage,
-    getAllMessages
+    create,
+    getAll
 };

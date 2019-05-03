@@ -22,20 +22,19 @@ app.get('/', (req, res) => {
 });
 
 app.get('/messages', (req, res) => {
-    messages.getAllMessages().then((messages) => {
+    messages.getAll().then((messages) => {
         res.json(messages);
     });
 });
 
 app.post('/messages', (req, res) => {
     console.log(req.body);
-    messages.insertMessage(req.body).then((message) => {
+    messages.create(req.body).then((message) => {
         res.json(message);
     }).catch((error) => {
         res.status(500);
         res.json(error);
     });
-
 });
 
 
